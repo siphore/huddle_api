@@ -3,6 +3,7 @@ import createError from "http-errors";
 import logger from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
@@ -12,6 +13,15 @@ import usersRouter from "./routes/users.js";
 mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api");
 
 const app = express();
+
+const allowedOrigins = ["http://localhost:5173"];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    credentials: true, // If using cookies or authorization headers
+  })
+);
 
 app.use(logger("dev"));
 app.use(express.json());
