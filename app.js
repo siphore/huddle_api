@@ -9,6 +9,10 @@ dotenv.config();
 
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
+import eventsRouter from "./routes/events.js";
+import articlesRouter from "./routes/articles.js";
+import formationsRouter from "./routes/formations.js";
+import organizersRouter from "./routes/organizers.js";
 
 mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api");
 
@@ -29,6 +33,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/events", eventsRouter);
+app.use("/articles", articlesRouter);
+app.use("/formations", formationsRouter);
+app.use("/organizers", organizersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

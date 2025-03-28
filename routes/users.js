@@ -1,5 +1,7 @@
 import express from "express";
 import User from "../models/user.js";
+import Token from "../models/token.js";
+import { authenticate } from "./auth.js";
 import { log } from "console";
 
 const router = express.Router();
@@ -79,7 +81,6 @@ router.get(
  * @apiError {Object} 409 EmailAlreadyRegistered The provided email is already in use.
  */
 router.post("/", async (req, res) => {
-  log("ok");
   const { fname, lname, email, password, role } = req.body;
 
   // Vérifier si l'utilisateur existe déjà
@@ -123,47 +124,47 @@ router.post("/", async (req, res) => {
  * @apiError {Object} 404 UserNotFound The user with the specified ID was not found.
  * @apiError {Object} 400 ValidationErrors Validation errors in the provided fields.
  */
-// router.put(
-//   "/:id",
-//   authenticate,
-//   asyncHandler(async (req, res) => {
-//     const updates = req.body;
+router.put(
+  "/:id",
+  authenticate,
+  asyncHandler(async (req, res) => {
+    const updates = req.body;
 
-//     const user = await User.findById(req.params.id);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-//     // Explicitly check for empty strings and replace them with undefined
-//     if (updates.username !== undefined && updates.username.trim() === "") {
-//       return res.status(400).json({ errors: ["Username is required"] });
-//     }
-//     if (updates.email !== undefined && updates.email.trim() === "") {
-//       return res.status(400).json({ errors: ["Email is required"] });
-//     }
-//     if (updates.password !== undefined && updates.password.trim() === "") {
-//       return res.status(400).json({ errors: ["Password is required"] });
-//     }
+    // Explicitly check for empty strings and replace them with undefined
+    if (updates.username !== undefined && updates.username.trim() === "") {
+      return res.status(400).json({ errors: ["Username is required"] });
+    }
+    if (updates.email !== undefined && updates.email.trim() === "") {
+      return res.status(400).json({ errors: ["Email is required"] });
+    }
+    if (updates.password !== undefined && updates.password.trim() === "") {
+      return res.status(400).json({ errors: ["Password is required"] });
+    }
 
-//     // Update fields
-//     if (updates.username) user.username = updates.username;
-//     if (updates.email) user.email = updates.email;
-//     if (updates.password) user.password = updates.password;
-//     if (updates.language) user.language = updates.language;
-//     if (updates.location) user.location = updates.location;
+    // Update fields
+    if (updates.username) user.username = updates.username;
+    if (updates.email) user.email = updates.email;
+    if (updates.password) user.password = updates.password;
+    if (updates.language) user.language = updates.language;
+    if (updates.location) user.location = updates.location;
 
-//     try {
-//       await user.save(); // This will trigger schema validation
-//       res.json(user);
-//     } catch (error) {
-//       if (error.name === "ValidationError") {
-//         const errors = Object.values(error.errors).map((e) => e.message);
-//         return res.status(400).json({ errors });
-//       }
-//       next(error); // Pass other errors to the error handler
-//     }
-//   })
-// );
+    try {
+      await user.save(); // This will trigger schema validation
+      res.json(user);
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        const errors = Object.values(error.errors).map((e) => e.message);
+        return res.status(400).json({ errors });
+      }
+      next(error); // Pass other errors to the error handler
+    }
+  })
+);
 
 /**
  * @api {delete} /users/:id Delete user by ID
@@ -183,16 +184,16 @@ router.post("/", async (req, res) => {
  *
  * @apiError {Object} 404 UserNotFound The user with the specified ID was not found.
  */
-// router.delete(
-//   "/:id",
-//   authenticate,
-//   asyncHandler(async (req, res) => {
-//     const deletedUser = await User.findByIdAndDelete(req.params.id);
-//     if (!deletedUser)
-//       return res.status(404).json({ message: "User not found" });
-//     res.json({ message: "User deleted successfully", deletedUser });
-//   })
-// );
+router.delete(
+  "/:id",
+  // authenticate,
+  asyncHandler(async (req, res) => {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser)
+      return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User deleted successfully", deletedUser });
+  })
+);
 
 /**
  * @api {post} /users/login Login a user
@@ -208,37 +209,37 @@ router.post("/", async (req, res) => {
  *
  * @apiError {Object} 401 InvalidCredentials The provided email or password is incorrect.
  */
-// router.post("/login", async (req, res, next) => {
-//   try {
-//     const user = await User.findOne({ email: req.body.email }).exec();
-//     if (!user)
-//       return res.status(401).json({ message: "Invalid email or password" }); // Unauthorized
+router.post("/login", async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email }).exec();
+    if (!user)
+      return res.status(401).json({ message: "Invalid email or password" }); // Unauthorized
 
-//     const valid = await bcrypt.compare(req.body.password, user.password);
-//     if (!valid)
-//       return res.status(401).json({ message: "Invalid email or password" }); // Unauthorized
+    const valid = await bcrypt.compare(req.body.password, user.password);
+    if (!valid)
+      return res.status(401).json({ message: "Invalid email or password" }); // Unauthorized
 
-//     // Login is valid...
-//     const exp = Math.floor(Date.now() / 1000 + 60 * 60 * 24); // 24 hours
-//     const token = await signJwt({ sub: user._id, exp }, config.secret);
+    // Login is valid...
+    const exp = Math.floor(Date.now() / 1000 + 60 * 60 * 24); // 24 hours
+    const token = await signJwt({ sub: user._id, exp }, config.secret);
 
-//     // Store token in database
-//     const newToken = new Token({
-//       token,
-//       userId: user._id,
-//       expiresAt: new Date(exp * 1000), // Convert to milliseconds
-//     });
-//     await newToken.save();
+    // Store token in database
+    const newToken = new Token({
+      token,
+      userId: user._id,
+      expiresAt: new Date(exp * 1000), // Convert to milliseconds
+    });
+    await newToken.save();
 
-//     res.send({
-//       message: `Welcome ${user.email}!`,
-//       token: { token, exp },
-//       id: user.id,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// });
+    res.send({
+      message: `Bienvenue ${user.email} !`,
+      token: { token, exp },
+      id: user.id,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 /**
  * @api {post} /users/logout Logout a user
@@ -252,19 +253,19 @@ router.post("/", async (req, res) => {
  * @apiError {Object} 400 BadRequest Token was not provided.
  * @apiError {Object} 404 TokenNotFound The provided token was not found.
  */
-// router.post("/logout", async (req, res) => {
-//   const token = req.headers.authorization?.split(" ")[1];
-//   if (!token) return res.sendStatus(400); // Bad Request
+router.post("/logout", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.sendStatus(400); // Bad Request
 
-//   try {
-//     const storedToken = await Token.findOneAndDelete({ token }); // Attempt to delete the token
-//     if (!storedToken) {
-//       return res.status(404).json({ message: "Token not found" }); // Token doesn't exist
-//     }
-//     res.send({ message: "Logged out successfully" });
-//   } catch (err) {
-//     res.status(500).json({ message: "Error during logout" });
-//   }
-// });
+  try {
+    const storedToken = await Token.findOneAndDelete({ token }); // Attempt to delete the token
+    if (!storedToken) {
+      return res.status(404).json({ message: "Token not found" }); // Token doesn't exist
+    }
+    res.send({ message: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error during logout" });
+  }
+});
 
 export default router;
