@@ -19,6 +19,10 @@ const articleSchema = new Schema({
     required: [true, "Author is required"],
     trim: true,
   },
+  date: {
+    type: Date,
+    required: true,
+  },
   img: {
     type: String,
     required: true,

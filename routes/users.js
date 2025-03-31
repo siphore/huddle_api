@@ -2,7 +2,13 @@ import express from "express";
 import User from "../models/user.js";
 import Token from "../models/token.js";
 import { authenticate } from "./auth.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import * as config from "../config.js";
+import { promisify } from "util";
 import { log } from "console";
+
+const signJwt = promisify(jwt.sign);
 
 const router = express.Router();
 
@@ -24,6 +30,7 @@ const asyncHandler = (fn) => (req, res, next) =>
  */
 router.get(
   "/",
+  authenticate,
   asyncHandler(async (req, res) => {
     const users = await User.find()
       .sort({ fname: 1 })
