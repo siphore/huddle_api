@@ -25,6 +25,16 @@ router.get(
 );
 
 router.get(
+  "/:type",
+  asyncHandler(async (req, res) => {
+    const articles = await Article.find({ type: req.params.type }).sort({
+      date: -1,
+    });
+    res.json(articles);
+  })
+);
+
+router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const article = await Article.findById(req.params.id);
