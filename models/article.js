@@ -6,7 +6,7 @@ const articleSchema = new Schema({
   title: {
     type: String,
     required: [true, "Title is required"],
-    maxlength: [30, "Title must not exceed 30 characters"],
+    // maxlength: [30, "Title must not exceed 30 characters"],
     trim: true,
   },
   content: {
@@ -25,6 +25,15 @@ const articleSchema = new Schema({
   },
   img: {
     type: String,
+    required: false,
+  },
+  tags: {
+    type: [String],
+    required: false,
+  },
+  type: {
+    type: String,
+    enum: ["news", "article"],
     required: true,
   },
 });

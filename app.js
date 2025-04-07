@@ -11,14 +11,18 @@ import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import eventsRouter from "./routes/events.js";
 import articlesRouter from "./routes/articles.js";
-import formationsRouter from "./routes/formations.js";
+import opportunitiesRouter from "./routes/opportunities.js";
 import organizersRouter from "./routes/organizers.js";
 
 mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api");
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://huddle-coach.ch",
+  "https://huddle-coach.ch/*",
+];
 app.use(
   cors({
     origin: allowedOrigins,
@@ -38,7 +42,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
 app.use("/articles", articlesRouter);
-app.use("/formations", formationsRouter);
+app.use("/opportunities", opportunitiesRouter);
 app.use("/organizers", organizersRouter);
 
 // catch 404 and forward to error handler

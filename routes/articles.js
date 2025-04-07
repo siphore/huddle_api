@@ -35,7 +35,7 @@ router.get(
 
 router.post("/", upload.single("img"), async (req, res) => {
   try {
-    const { title, content, author } = req.body;
+    const { title, content, author, tags, type } = req.body;
     const imagePath = req.file.path;
 
     // Upload to Cloudinary
@@ -51,6 +51,8 @@ router.post("/", upload.single("img"), async (req, res) => {
       author,
       date: new Date(),
       img: cloudinaryUrl,
+      tags,
+      type,
     });
 
     await newArticle.save();
