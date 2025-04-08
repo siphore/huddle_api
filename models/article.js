@@ -23,7 +23,7 @@ const articleSchema = new Schema({
     type: Date,
     required: true,
   },
-  img: {
+  image: {
     type: String,
     required: false,
   },

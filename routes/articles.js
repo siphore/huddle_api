@@ -2,8 +2,8 @@ import express from "express";
 import Article from "../models/article.js";
 import { authenticate } from "./auth.js";
 import {
-  uploadImage,
-  deleteImage,
+  uploadFile,
+  deleteFile,
   extractPublicId,
 } from "../utils/cloudinary.js";
 import multer from "multer";
@@ -43,16 +43,16 @@ router.get(
   })
 );
 
-router.post("/", upload.single("img"), async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { title, content, author, tags, type } = req.body;
-    const imagePath = req.file.path;
+    const filePath = req.file.path;
 
     // Upload to Cloudinary
-    const cloudinaryUrl = await uploadImage(imagePath, req.file.filename);
+    const cloudinaryUrl = await uploadFile(filePath, req.file.filename);
 
     // Delete the local file
-    await fs.unlink(imagePath);
+    await fs.unlink(filePath);
 
     // Save article with cloudinary image URL
     const newArticle = new Article({
@@ -60,7 +60,7 @@ router.post("/", upload.single("img"), async (req, res) => {
       content,
       author,
       date: new Date(),
-      img: cloudinaryUrl,
+      image: cloudinaryUrl,
       tags,
       type,
     });
@@ -84,7 +84,7 @@ router.delete(
     // 🧠 Extract the public ID from the Cloudinary URL
     const publicId = extractPublicId(deletedArticle.img);
     if (publicId) {
-      await deleteImage(publicId);
+      await deleteFile(publicId);
     }
 
     res.json({ message: "Article deleted successfully", deletedArticle });

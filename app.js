@@ -11,6 +11,7 @@ import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import eventsRouter from "./routes/events.js";
 import articlesRouter from "./routes/articles.js";
+import podcastsRouter from "./routes/podcasts.js";
 import opportunitiesRouter from "./routes/opportunities.js";
 import organizersRouter from "./routes/organizers.js";
 
@@ -42,6 +43,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
 app.use("/articles", articlesRouter);
+app.use("/podcasts", podcastsRouter);
 app.use("/opportunities", opportunitiesRouter);
 app.use("/organizers", organizersRouter);
 

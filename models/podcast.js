@@ -17,12 +17,12 @@ const podcastSchema = new Schema({
     required: true,
     trim: true,
   },
-  with: {
+  guest: {
     type: String,
     required: true,
     trim: true,
   },
-  by: {
+  author: {
     type: String,
     required: true,
     trim: true,
@@ -33,6 +33,10 @@ const podcastSchema = new Schema({
     trim: true,
   },
   audio: {
+    type: String,
+    required: true,
+  },
+  image: {
     type: String,
     required: true,
   },
