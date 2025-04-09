@@ -5,18 +5,17 @@ const Schema = mongoose.Schema;
 const opportunitySchema = new Schema({
   title: {
     type: String,
-    required: [true, "Title is required"],
-    // maxlength: [30, "Title must not exceed 30 characters"],
+    required: true,
     trim: true,
   },
   description: {
     type: String,
-    required: [true, "Description is required"],
+    required: true,
     trim: true,
   },
   club: {
     type: String,
-    required: [true, "Description is required"],
+    required: true,
     trim: true,
   },
   license: {
@@ -42,18 +41,18 @@ const opportunitySchema = new Schema({
   },
   NPA: {
     type: Number,
-    required: [true, "Description is required"],
+    required: true,
     trim: true,
   },
   location: {
     type: String,
-    required: [true, "Description is required"],
+    required: true,
     trim: true,
   },
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+  contract: {
+    type: String,
     required: true,
+    enum: ["part-time", "volunteer", "full-time"],
   },
 });
 
