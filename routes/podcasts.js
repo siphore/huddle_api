@@ -92,7 +92,7 @@ router.post(
 
 router.delete(
   "/:id",
-  // authenticate,
+  authenticate,
   asyncHandler(async (req, res) => {
     const deletedPodcast = await Podcast.findByIdAndDelete(req.params.id);
     if (!deletedPodcast)

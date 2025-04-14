@@ -4,6 +4,8 @@ import logger from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
 
 dotenv.config();
 
@@ -15,7 +17,13 @@ import podcastsRouter from "./routes/podcasts.js";
 import opportunitiesRouter from "./routes/opportunities.js";
 import organizersRouter from "./routes/organizers.js";
 
-mongoose.connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api");
+mongoose
+  .connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api")
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1); // Exit app if DB fails to connect
+  });
 
 const app = express();
 
@@ -38,6 +46,8 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
+app.use(compression());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
@@ -46,6 +56,7 @@ app.use("/articles", articlesRouter);
 app.use("/podcasts", podcastsRouter);
 app.use("/opportunities", opportunitiesRouter);
 app.use("/organizers", organizersRouter);
+app.get("/health", (req, res) => res.send("OK"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -59,8 +70,12 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // Send the error status
-  res.status(err.status || 500);
-  res.send(err.message);
+  res.json({
+    error: {
+      message: err.message,
+      status: err.status || 500,
+    },
+  });
 });
 
 export default app;

@@ -193,7 +193,7 @@ router.put(
  */
 router.delete(
   "/:id",
-  // authenticate,
+  authenticate,
   asyncHandler(async (req, res) => {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser)
