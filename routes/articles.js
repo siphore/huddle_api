@@ -25,21 +25,21 @@ router.get(
 );
 
 router.get(
-  "/:type",
+  "/type/:type",
   asyncHandler(async (req, res) => {
     const articles = await Article.find({ type: req.params.type }).sort({
       date: -1,
     });
-    res.json(articles);
+    return res.json(articles);
   })
 );
 
 router.get(
-  "/:id",
+  "/id/:id",
   asyncHandler(async (req, res) => {
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ message: "Article not found" });
-    res.json(article);
+    return res.json(article);
   })
 );
 

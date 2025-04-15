@@ -3,50 +3,62 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const eventSchema = new Schema({
+  theme: {
+    type: String,
+    enum: ["events", "certifications", "workshops", "competitions", "camps"],
+    required: true,
+  },
   title: {
     type: String,
-    required: [true, "Title is required"],
-    maxlength: [30, "Title must not exceed 30 characters"],
+    required: true,
+    trim: true,
+  },
+  subtitle: {
+    type: String,
+    required: true,
     trim: true,
   },
   description: {
     type: String,
-    required: [true, "Description is required"],
+    required: true,
     trim: true,
   },
-  location: {
-    type: Number,
-    required: [true, "Location is required"],
+  organizer: {
+    type: String,
+    required: true,
+    trim: true,
   },
   date: {
     type: Date,
     required: true,
   },
-  price: {
-    type: Number,
+  requirements: {
+    type: String,
     required: true,
+    trim: true,
   },
-  organizer: {
-    type: Schema.Types.ObjectId,
-    ref: "Organizer",
-    required: true,
-  },
-  contact: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  img: {
+  building: {
     type: String,
     required: true,
   },
-  bookingOnline: {
-    type: Boolean,
+  address: {
+    type: String,
     required: true,
   },
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+  npaCity: {
+    type: String,
+    required: true,
+  },
+  website: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: String,
     required: true,
   },
 });

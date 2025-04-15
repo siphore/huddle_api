@@ -15,7 +15,6 @@ import eventsRouter from "./routes/events.js";
 import articlesRouter from "./routes/articles.js";
 import podcastsRouter from "./routes/podcasts.js";
 import opportunitiesRouter from "./routes/opportunities.js";
-import organizersRouter from "./routes/organizers.js";
 
 mongoose
   .connect(process.env.DATABASE_URL || "mongodb://localhost/huddle-api")
@@ -55,7 +54,6 @@ app.use("/events", eventsRouter);
 app.use("/articles", articlesRouter);
 app.use("/podcasts", podcastsRouter);
 app.use("/opportunities", opportunitiesRouter);
-app.use("/organizers", organizersRouter);
 app.get("/health", (req, res) => res.send("OK"));
 
 // catch 404 and forward to error handler
