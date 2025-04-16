@@ -4,16 +4,10 @@ import bcrypt from "bcrypt"; // Import bcrypt pour le hashage du mot de passe
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  fname: {
+  pseudo: {
     type: String,
-    required: [true, "First name is required"],
-    maxlength: [16, "First name must not exceed 16 characters"],
-    trim: true,
-  },
-  lname: {
-    type: String,
-    required: [true, "Last name is required"],
-    maxlength: [16, "Last name must not exceed 16 characters"],
+    required: true,
+    maxlength: [16, "Pseudo must not exceed 16 characters"],
     trim: true,
   },
   email: {

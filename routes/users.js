@@ -88,7 +88,7 @@ router.get(
  * @apiError {Object} 409 EmailAlreadyRegistered The provided email is already in use.
  */
 router.post("/", async (req, res) => {
-  const { fname, lname, email, password, role } = req.body;
+  const { pseudo, email, password, role } = req.body;
 
   // Vérifier si l'utilisateur existe déjà
   const existingUser = await User.findOne({ email });
@@ -98,8 +98,7 @@ router.post("/", async (req, res) => {
 
   // Créer un nouvel utilisateur sans hacher le mot de passe ici
   const newUser = new User({
-    fname,
-    lname,
+    pseudo,
     email,
     password,
     role,
@@ -218,6 +217,7 @@ router.delete(
  */
 router.post("/login", async (req, res, next) => {
   try {
+    log(req.body)
     const user = await User.findOne({ email: req.body.email }).exec();
     if (!user)
       return res.status(401).json({ message: "Invalid email or password" }); // Unauthorized
