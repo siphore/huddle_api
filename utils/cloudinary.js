@@ -78,13 +78,9 @@ export async function deleteFile(publicId, resourceType) {
 export function extractPublicId(fileUrl) {
   try {
     const parts = fileUrl.split("/");
-    log(parts);
     const fileNameWithParams = parts[parts.length - 1]; // e.g., "filename.mp3?_a=123"
-    log(fileNameWithParams);
     const cleanFileName = fileNameWithParams.split("?")[0];
-    log(cleanFileName);
     const publicId = cleanFileName.split(".")[0];
-    log(publicId);
     return decodeURIComponent(publicId);
   } catch (err) {
     console.error("Failed to extract public ID from URL:", err);
